@@ -1,13 +1,15 @@
 import { Router } from "express";
 
+import { registerUserController } from "#controllers/public/auth.controller.js";
 import {
-  registerUserController,
-  loginUserController,
-} from "#controllers/public/auth.controller.js";
+  loginController,
+  logoutController,
+} from "#controllers/auth.shared.controller.js";
 import { loginPublicMiddleware } from "#middlewares/public/auth.middleware.js";
 const userAuthRouter = Router();
 
 userAuthRouter.post("/register", registerUserController);
-userAuthRouter.post("/login", loginPublicMiddleware, loginUserController);
+userAuthRouter.post("/login", loginPublicMiddleware, loginController);
+userAuthRouter.post("/logout", logoutController);
 
 export default userAuthRouter;
