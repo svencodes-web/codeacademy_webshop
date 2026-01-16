@@ -1,6 +1,6 @@
-import { getUserByEmail } from "#models/user.model.js";
+import { getUserByEmail, getUserById } from "#models/user.model.js";
 import { ApiError } from "#utils/error.utils.js";
-
+import { verifyJWTToken } from "#utils/jwt.utils.js";
 /**
  *
  * #description this middleware grabs a user from the database by email checks if the user exists and is a admin
@@ -32,7 +32,7 @@ const loginAdminMiddleware = async (req, res, next) => {
     }
 
     if (user.role !== "admin") {
-      throw new ApiError("Unauthorized access", 403);
+      throw new ApiError("Unauthorized access", 401);
     }
 
     req.loginCandidate = {
@@ -48,4 +48,35 @@ const loginAdminMiddleware = async (req, res, next) => {
   }
 };
 
-export { loginAdminMiddleware };
+const authenticateAdminMiddleware = async (req, res, next) => {
+  const jwt = req.cookies?.jwt_token || null;
+
+  try {
+    if (!jwt) {
+      throw new ApiError("Unauthorized access", 401);
+    }
+
+    const token = verifyJWTToken(jwt);
+
+    const adminUser = await getUserById(token.userId, ["id", "role"]);
+
+    if (!adminUser) {
+      throw new ApiError("Unauthorized acces", 401);
+    }
+
+    if (adminUser.role !== "admin") {
+      throw new ApiError("Unauthorized access", 403);
+    }
+
+    req.user = {
+      id: adminUser.id,
+      role: adminUser.role,
+    };
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { loginAdminMiddleware, authenticateAdminMiddleware };

@@ -19,6 +19,16 @@ const getUserByEmail = async (email, columns, dbClient = null) => {
   return result.rows[0];
 };
 
+const getUserById = async (id, columns, dbClient = null) => {
+  const executor = getExecutor(dbClient);
+
+  const sql = `SELECT ${columns.join(", ")} FROM users WHERE id = $1 LIMIT 1`;
+  const value = [id];
+  const result = await executor(sql, value);
+
+  return result.rows[0];
+};
+
 /**
  *
  * @param {*} userMap - A mapping of the new user required keys being the db column names
@@ -42,4 +52,4 @@ const createUser = async (userMap, dbClient = null) => {
   return result.rows[0];
 };
 
-export { getUserByEmail, createUser };
+export { getUserByEmail, getUserById, createUser };

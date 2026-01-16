@@ -1,6 +1,9 @@
 import { Router } from "express";
 
-import { loginAdminMiddleware } from "#middlewares/admin/auth.middleware.js";
+import {
+  loginAdminMiddleware,
+  authenticateAdminMiddleware,
+} from "#middlewares/admin/auth.middleware.js";
 import {
   loginController,
   logoutController,
@@ -8,6 +11,8 @@ import {
 
 const adminAuthRouter = Router();
 
+// Auth routes
 adminAuthRouter.post("/login", loginAdminMiddleware, loginController);
 adminAuthRouter.post("/logout", logoutController);
+
 export default adminAuthRouter;

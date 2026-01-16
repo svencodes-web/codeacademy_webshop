@@ -16,4 +16,9 @@ const generateJWTToken = (userId, role, res) => {
   return token;
 };
 
-export { generateJWTToken };
+const verifyJWTToken = (token) => {
+  const decoded = jwt.verify(token, JWT_SECRET_TOKEN);
+  return decoded;
+};
+
+export { generateJWTToken, verifyJWTToken };

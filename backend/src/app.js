@@ -5,6 +5,7 @@ import userAuthRouter from "#routes/public/auth.routes.js";
 
 // ---------- ADMIN ROUTES ----------
 import adminAuthRouter from "#routes/admin/auth.routes.js";
+import adminProductRouter from "#routes/admin/products.routes.js";
 
 // ---------- MIDDLEWARE IMPORTS ----------
 import { errorMiddleware } from "#middlewares/error.middleware.js";
@@ -24,6 +25,7 @@ app.use(`${PUBLIC_API_V1}/auth`, userAuthRouter);
 
 // ---------- ADMIN API MOUNTS ----------
 app.use(`${ADMIN_API_V1}/auth`, adminAuthRouter);
+app.use(`${ADMIN_API_V1}/products`, adminProductRouter);
 
 // ---------- ERROR HANDLING MIDDLEWARE ----------
 
