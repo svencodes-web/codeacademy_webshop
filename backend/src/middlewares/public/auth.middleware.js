@@ -48,4 +48,35 @@ const loginPublicMiddleware = async (req, res, next) => {
   }
 };
 
-export { loginPublicMiddleware };
+const authenticatePublicMiddleware = async (req, res, next) => {
+  const jwt = req.cookies?.jwt_token || null;
+
+  try {
+    if (!jwt) {
+      throw new ApiError("Unauthorized access", 401);
+    }
+
+    const token = verifyJWTToken(jwt);
+
+    const publicUser = await getUserById(token.userId, ["id", "role"]);
+
+    if (!publicUser) {
+      throw new ApiError("Unauthorized acces", 401);
+    }
+
+    if (publicUser.role !== "customer") {
+      throw new ApiError("Unauthorized access", 403);
+    }
+
+    req.user = {
+      id: publicUser.id,
+      role: publicUser.role,
+    };
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { loginPublicMiddleware, authenticatePublicMiddleware };
