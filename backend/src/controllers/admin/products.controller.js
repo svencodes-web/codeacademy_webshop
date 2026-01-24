@@ -7,8 +7,9 @@ import {
 } from "#services/admin/products.services.js";
 
 const getAllProductsController = async (req, res, next) => {
+  const { limit, page } = req.query;
   try {
-    const products = await getAllProductsService();
+    const products = await getAllProductsService(limit, page);
     return res.status(200).json({
       message: "Products successfully retrieved",
       products: products,
@@ -25,7 +26,7 @@ const createProductController = async (req, res, next) => {
     if (!name || !description || !price) {
       throw new ApiError(
         "Name, description, and price are required fields",
-        400
+        400,
       );
     }
 
@@ -52,7 +53,7 @@ const updateProductController = async (req, res, next) => {
     if (!name || !description || !price) {
       throw new ApiError(
         "Name, description, and price are required fields",
-        400
+        400,
       );
     }
 

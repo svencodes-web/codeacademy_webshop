@@ -1,11 +1,11 @@
 import { getExecutor } from "#utils/dbExecutor.utils.js";
 
-const fetchAllProducts = async (columns, dbClient = null) => {
+const fetchAllProducts = async (columns, limit, offset, dbClient = null) => {
   const executor = getExecutor(dbClient);
 
-  const sql = `SELECT ${columns.join(", ")} FROM products`;
+  const sql = `SELECT ${columns.join(", ")} FROM products LIMIT ${$1} OFFSET ${$2};`;
 
-  const result = await executor(sql);
+  const result = await executor(sql, [limit, offset]);
 
   return result.rows;
 };
@@ -18,7 +18,7 @@ const createProduct = async (productMap, dbClient = null) => {
   const placeholders = columns.map((_, i) => `$${i + 1}`);
 
   const sql = `INSERT INTO products(${columns.join(
-    ", "
+    ", ",
   )}) VALUES(${placeholders.join(", ")})
   RETURNING id, name, description, price_cents, image_url;
   `;

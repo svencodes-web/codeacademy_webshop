@@ -11,15 +11,16 @@ import {
 } from "#models/products.model.js";
 import { ApiError } from "#utils/error.utils.js";
 
-const getAllProductsService = async () => {
-  const products = await fetchAllProducts([
-    "id",
-    "name",
-    "description",
-    "price_cents",
-    "image_url",
-    "stock_count",
-  ]);
+const getAllProductsService = async (limit, page) => {
+  // Pagination logic
+  const limit = parseInt(limit, 10);
+  const offset = (parseInt(page, 10) - 1) * limit;
+
+  const products = await fetchAllProducts(
+    ["id", "name", "description", "price_cents", "image_url", "stock_count"],
+    limit,
+    offset,
+  );
 
   if (!products) {
     throw new ApiError("Products could not be retrieved", 500);
